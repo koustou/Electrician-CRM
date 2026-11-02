@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { initializeApp } from "firebase/app";
 import { getFirestore } from 'firebase/firestore';
 
-// --- FIREBASE CONFIG ---
+// Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyAenf809OtoTQ9rPUoti8Wc6ca_44fnTmQ",
   authDomain: "electrician-crm-babf3.firebaseapp.com",
@@ -23,7 +23,7 @@ export default function App() {
   const [decoyPin] = useState('8888');
   const [activeTab, setActiveTab] = useState('dashboard');
 
-  const [clients, setClients] = useState([
+  const [clients] = useState([
     { id: '1', name: 'Γιάννης Παπαδόπουλος', phone: '6911111111', email: 'giannis@test.com', address: 'Κηφισίας 42, Αθήνα' }
   ]);
   
@@ -54,14 +54,11 @@ export default function App() {
     } else if (pinInput === decoyPin) {
       setAuthMode('decoy');
       setShowPinModal(false);
+    } else if (pinInput === '1234') {
+      setAuthMode('standard');
+      setShowPinModal(false);
     } else {
-      const foundTech = technicians.find(t => t.pin === pinInput && t.active);
-      if (foundTech || pinInput === '1234') {
-        setAuthMode('standard');
-        setShowPinModal(false);
-      } else {
-        alert('Λανθασμένος Κωδικός PIN!');
-      }
+      alert('Λανθασμένος Κωδικός PIN!');
     }
     setPinInput('');
   };
@@ -76,9 +73,9 @@ export default function App() {
   if (showPinModal) {
     return (
       <div style={{ height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#0f172a', fontFamily: 'sans-serif', color: '#fff', position: 'fixed', top: 0, left: 0, zIndex: 9999 }}>
-        <div style={{ background: '#1e293b', padding: '40px', borderRadius: '12px', width: '100%', maxWidth: '400px', boxShadow: '0 10px 25px rgba(0,0,0,0.5)', textAlign: 'center' }}>
+        <div style={{ background: '#1e293b', padding: '40px', borderRadius: '12px', width: '90%', maxWidth: '380px', boxShadow: '0 10px 25px rgba(0,0,0,0.5)', textAlign: 'center' }}>
           <h2 style={{ marginBottom: '8px', color: '#38bdf8' }}>KOUSTOU CRM</h2>
-          <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '24px' }}>Field Service Suite & Management</p>
+          <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '24px' }}>Field Service Suite</p>
           <form onSubmit={handleLogin}>
             <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', textAlign: 'left' }}>Εισάγετε PIN Πρόσβασης:</label>
             <input 
@@ -87,7 +84,7 @@ export default function App() {
               value={pinInput} 
               onChange={(e) => setPinInput(e.target.value)} 
               placeholder="••••"
-              style={{ width: '100%', padding: '12px', fontSize: '20px', borderRadius: '8px', border: '1px solid #475569', background: '#0f172a', color: '#fff', textAlign: 'center', marginBottom: '20px', letterSpacing: '6px', boxSizing: 'border-box' }}
+              style={{ width: '100%', padding: '12px', fontSize: '22px', borderRadius: '8px', border: '1px solid #475569', background: '#0f172a', color: '#fff', textAlign: 'center', marginBottom: '20px', letterSpacing: '6px', boxSizing: 'border-box' }}
               autoFocus
             />
             <button type="submit" style={{ width: '100%', padding: '12px', background: '#0284c7', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer' }}>
@@ -95,7 +92,7 @@ export default function App() {
             </button>
           </form>
           <div style={{ marginTop: '20px', fontSize: '12px', color: '#64748b', lineHeight: '1.5' }}>
-            Test PINs: Master (<b>9999</b>) | Decoy (<b>8888</b>) | Tech (<b>1234</b>)
+            PINs: Master (<b>9999</b>) | Decoy (<b>8888</b>) | Tech (<b>1234</b>)
           </div>
         </div>
       </div>
@@ -106,7 +103,7 @@ export default function App() {
     <div style={{ fontFamily: 'sans-serif', background: '#f8fafc', minHeight: '100vh', color: '#1e293b' }}>
       <header style={{ background: '#0f172a', color: '#fff', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: '20px', color: '#38bdf8' }}>KOUSTOU CRM & Field Service</h1>
+          <h1 style={{ margin: 0, fontSize: '20px', color: '#38bdf8' }}>KOUSTOU CRM</h1>
           <span style={{ fontSize: '12px', color: '#94a3b8' }}>
             Λειτουργία: <strong>{authMode === 'master' ? 'Master Admin' : authMode === 'decoy' ? 'Fake Admin' : 'Standard / Τεχνικός'}</strong>
           </span>
@@ -145,7 +142,6 @@ export default function App() {
         {activeTab === 'dashboard' && (
           <div>
             <h2>Επισκόπηση Επιχείρησης</h2>
-            <p>Καλωσόρισες στο KOUSTOU CRM! Η εφαρμογή λειτουργεί κανονικά.</p>
             <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', marginTop: '20px' }}>
               <h3>Ενεργά Έργα: {visibleJobs.length}</h3>
             </div>
