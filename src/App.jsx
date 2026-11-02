@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 
 export default function App() {
+  // --- AUTH STATE ---
+  const [authMode, setAuthMode] = useState(null);
+  const [pinInput, setPinInput] = useState('');
+  const [showPinModal, setShowPinModal] = useState(true);
+
+  // --- APP STATE ---
   const [activeTab, setActiveTab] = useState('clients');
   const [clients, setClients] = useState([
     { id: '1', name: 'Γιάννης Παπαδόπουλος', phone: '6911111111', email: 'giannis@test.com', address: 'Κηφισίας 42, Αθήνα', category: 'Ιδιώτης', taxId: '123456789', taxOffice: 'Δ΄ Αθηνών' },
@@ -12,6 +18,23 @@ export default function App() {
   const [newClient, setNewClient] = useState({
     name: '', phone: '', email: '', address: '', category: 'Ιδιώτης', taxId: '', taxOffice: ''
   });
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (pinInput === '9999') {
+      setAuthMode('master');
+      setShowPinModal(false);
+    } else if (pinInput === '8888') {
+      setAuthMode('decoy');
+      setShowPinModal(false);
+    } else if (pinInput === '1234') {
+      setAuthMode('standard');
+      setShowPinModal(false);
+    } else {
+      alert('Λανθασμένος Κωδικός PIN!');
+    }
+    setPinInput('');
+  };
 
   const handleAddClient = (e) => {
     e.preventDefault();
@@ -31,13 +54,51 @@ export default function App() {
     c.address.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // --- PIN MODAL SCREEN ---
+  if (showPinModal) {
+    return (
+      <div style={{ height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#0f172a', fontFamily: 'sans-serif', color: '#fff', position: 'fixed', top: 0, left: 0, zIndex: 9999 }}>
+        <div style={{ background: '#1e293b', padding: '40px', borderRadius: '12px', width: '90%', maxWidth: '380px', boxShadow: '0 10px 25px rgba(0,0,0,0.5)', textAlign: 'center' }}>
+          <h2 style={{ marginBottom: '8px', color: '#38bdf8' }}>KOUSTOU CRM</h2>
+          <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '24px' }}>Field Service Suite</p>
+          <form onSubmit={handleLogin}>
+            <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', textAlign: 'left' }}>Εισάγετε PIN Πρόσβασης:</label>
+            <input 
+              type="password" 
+              maxLength="6"
+              value={pinInput} 
+              onChange={(e) => setPinInput(e.target.value)} 
+              placeholder="••••"
+              style={{ width: '100%', padding: '12px', fontSize: '22px', borderRadius: '8px', border: '1px solid #475569', background: '#0f172a', color: '#fff', textAlign: 'center', marginBottom: '20px', letterSpacing: '6px', boxSizing: 'border-box' }}
+              autoFocus
+            />
+            <button type="submit" style={{ width: '100%', padding: '12px', background: '#0284c7', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer' }}>
+              Σύνδεση
+            </button>
+          </form>
+          <div style={{ marginTop: '20px', fontSize: '12px', color: '#64748b', lineHeight: '1.5' }}>
+            PINs: Master (<b>9999</b>) | Decoy (<b>8888</b>) | Tech (<b>1234</b>)
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // --- MAIN APP SCREEN ---
   return (
     <div style={{ fontFamily: 'sans-serif', background: '#f8fafc', minHeight: '100vh', color: '#1e293b' }}>
       <header style={{ background: '#0f172a', color: '#fff', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h1 style={{ margin: 0, fontSize: '20px', color: '#38bdf8' }}>KOUSTOU CRM</h1>
-          <span style={{ fontSize: '12px', color: '#94a3b8' }}>Λειτουργία: <strong>Master Admin (Live)</strong></span>
+          <span style={{ fontSize: '12px', color: '#94a3b8' }}>
+            Λειτουργία: <strong>{authMode === 'master' ? 'Master Admin' : authMode === 'decoy' ? 'Fake Admin' : 'Τεχνικός'}</strong>
+          </span>
         </div>
+        <button 
+          onClick={() => setShowPinModal(true)} 
+          style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>
+          Αποσύνδεση
+        </button>
       </header>
 
       <nav style={{ background: '#1e293b', padding: '0 24px', display: 'flex', gap: '10px' }}>
@@ -105,83 +166,8 @@ export default function App() {
         </div>
       </main>
 
+      {/* MODAL ΝΕΟΥ ΠΕΛΑΤΗ */}
       {showAddClientModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '16px' }}>
           <div style={{ background: '#fff', padding: '24px', borderRadius: '10px', width: '100%', maxWidth: '450px', maxHeight: '90vh', overflowY: 'auto' }}>
-            <h3 style={{ marginTop: 0, color: '#0f172a' }}>Καταχώριση Νέου Πελάτη</h3>
-            <form onSubmit={handleAddClient}>
-              <label style={{ display: 'block', marginBottom: '4px', fontSize: '13px', fontWeight: 'bold' }}>Ονοματεπώνυμο / Επωνυμία *</label>
-              <input 
-                type="text" 
-                required 
-                value={newClient.name} 
-                onChange={e => setNewClient({ ...newClient, name: e.target.value })}
-                style={{ width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
-              />
-
-              <label style={{ display: 'block', marginBottom: '4px', fontSize: '13px', fontWeight: 'bold' }}>Τηλέφωνο *</label>
-              <input 
-                type="tel" 
-                required 
-                value={newClient.phone} 
-                onChange={e => setNewClient({ ...newClient, phone: e.target.value })}
-                style={{ width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
-              />
-
-              <label style={{ display: 'block', marginBottom: '4px', fontSize: '13px', fontWeight: 'bold' }}>Email</label>
-              <input 
-                type="email" 
-                value={newClient.email} 
-                onChange={e => setNewClient({ ...newClient, email: e.target.value })}
-                style={{ width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
-              />
-
-              <label style={{ display: 'block', marginBottom: '4px', fontSize: '13px', fontWeight: 'bold' }}>Διεύθυνση</label>
-              <input 
-                type="text" 
-                value={newClient.address} 
-                onChange={e => setNewClient({ ...newClient, address: e.target.value })}
-                style={{ width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
-              />
-
-              <label style={{ display: 'block', marginBottom: '4px', fontSize: '13px', fontWeight: 'bold' }}>Κατηγορία</label>
-              <select 
-                value={newClient.category} 
-                onChange={e => setNewClient({ ...newClient, category: e.target.value })}
-                style={{ width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}>
-                <option value="Ιδιώτης">Ιδιώτης</option>
-                <option value="Εταιρεία">Εταιρεία / Επαγγελματίας</option>
-              </select>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '4px', fontSize: '13px', fontWeight: 'bold' }}>ΑΦΜ</label>
-                  <input 
-                    type="text" 
-                    value={newClient.taxId} 
-                    onChange={e => setNewClient({ ...newClient, taxId: e.target.value })}
-                    style={{ width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
-                  />
-                </div>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '4px', fontSize: '13px', fontWeight: 'bold' }}>ΔΟΥ</label>
-                  <input 
-                    type="text" 
-                    value={newClient.taxOffice} 
-                    onChange={e => setNewClient({ ...newClient, taxOffice: e.target.value })}
-                    style={{ width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
-                  />
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px' }}>
-                <button type="button" onClick={() => setShowAddClientModal(false)} style={{ padding: '10px 16px', background: '#e2e8f0', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>Ακύρωση</button>
-                <button type="submit" style={{ padding: '10px 16px', background: '#16a34a', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>Αποθήκευση</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+            <h3 style={{ marginTop: 0, color: '#0f172a' }}>Καταχώριση Νέου Πελά
