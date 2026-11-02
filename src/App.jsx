@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { initializeApp } from "firebase/app";
 import { getFirestore } from 'firebase/firestore';
 
-
 // --- FIREBASE CONFIG (electrician-crm-babf3) ---
 const firebaseConfig = {
   apiKey: "AIzaSyAenf809OtoTQ9rPUoti8Wc6ca_44fnTmQ",
