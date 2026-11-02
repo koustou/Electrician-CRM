@@ -170,4 +170,80 @@ export default function App() {
       {showAddClientModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '16px' }}>
           <div style={{ background: '#fff', padding: '24px', borderRadius: '10px', width: '100%', maxWidth: '450px', maxHeight: '90vh', overflowY: 'auto' }}>
-            <h3 style={{ marginTop: 0, color: '#0f172a' }}>Καταχώριση Νέου Πελά
+            <h3 style={{ marginTop: 0, color: '#0f172a' }}>Καταχώριση Νέου Πελάτη</h3>
+            <form onSubmit={handleAddClient}>
+              <label style={{ display: 'block', marginBottom: '4px', fontSize: '13px', fontWeight: 'bold' }}>Ονοματεπώνυμο / Επωνυμία *</label>
+              <input 
+                type="text" 
+                required 
+                value={newClient.name} 
+                onChange={e => setNewClient({ ...newClient, name: e.target.value })}
+                style={{ width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
+              />
+
+              <label style={{ display: 'block', marginBottom: '4px', fontSize: '13px', fontWeight: 'bold' }}>Τηλέφωνο *</label>
+              <input 
+                type="tel" 
+                required 
+                value={newClient.phone} 
+                onChange={e => setNewClient({ ...newClient, phone: e.target.value })}
+                style={{ width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
+              />
+
+              <label style={{ display: 'block', marginBottom: '4px', fontSize: '13px', fontWeight: 'bold' }}>Email</label>
+              <input 
+                type="email" 
+                value={newClient.email} 
+                onChange={e => setNewClient({ ...newClient, email: e.target.value })}
+                style={{ width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
+              />
+
+              <label style={{ display: 'block', marginBottom: '4px', fontSize: '13px', fontWeight: 'bold' }}>Διεύθυνση</label>
+              <input 
+                type="text" 
+                value={newClient.address} 
+                onChange={e => setNewClient({ ...newClient, address: e.target.value })}
+                style={{ width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
+              />
+
+              <label style={{ display: 'block', marginBottom: '4px', fontSize: '13px', fontWeight: 'bold' }}>Κατηγορία</label>
+              <select 
+                value={newClient.category} 
+                onChange={e => setNewClient({ ...newClient, category: e.target.value })}
+                style={{ width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}>
+                <option value="Ιδιώτης">Ιδιώτης</option>
+                <option value="Εταιρεία">Εταιρεία / Επαγγελματίας</option>
+              </select>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '4px', fontSize: '13px', fontWeight: 'bold' }}>ΑΦΜ</label>
+                  <input 
+                    type="text" 
+                    value={newClient.taxId} 
+                    onChange={e => setNewClient({ ...newClient, taxId: e.target.value })}
+                    style={{ width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '4px', fontSize: '13px', fontWeight: 'bold' }}>ΔΟΥ</label>
+                  <input 
+                    type="text" 
+                    value={newClient.taxOffice} 
+                    onChange={e => setNewClient({ ...newClient, taxOffice: e.target.value })}
+                    style={{ width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px' }}>
+                <button type="button" onClick={() => setShowAddClientModal(false)} style={{ padding: '10px 16px', background: '#e2e8f0', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>Ακύρωση</button>
+                <button type="submit" style={{ padding: '10px 16px', background: '#16a34a', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>Αποθήκευση</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
